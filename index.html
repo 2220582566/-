@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>如何幸福的全面指南 - 优化版</title>
+    <title>如何幸福的全面指南</title>
     <script src="https://cdn.tailwindcss.com/3.4.1"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.8.0/mermaid.min.js"></script>
@@ -56,7 +56,6 @@
             position: relative;
         }
 
-        /* Vertical line for children */
         .mindmap-nav ul::before {
             content: '';
             position: absolute;
@@ -67,23 +66,21 @@
             background-color: #cbd5e1;
         }
 
-        /* Horizontal line connecting to parent */
         .mindmap-nav li::before {
             content: '';
             position: absolute;
             left: -25px;
-            top: 18px; /* Adjust vertical alignment */
+            top: 18px;
             width: 25px;
             height: 1px;
             background-color: #cbd5e1;
         }
 
-        /* Dot/Node */
         .mindmap-nav li::after {
             content: '';
             position: absolute;
             left: -2px;
-            top: 14px; /* Adjust vertical alignment */
+            top: 14px;
             width: 9px;
             height: 9px;
             border-radius: 50%;
@@ -108,13 +105,11 @@
             color: #4338ca;
         }
 
-        .mindmap-nav a.active + li::after,
         .mindmap-nav li:has(a.active)::after {
              background-color: #6366f1;
              transform: scale(1.2);
         }
 
-        /* Hide lines for the root */
         .mindmap-nav > ul {
             padding-left: 0;
         }
@@ -151,9 +146,17 @@
 </head>
 <body class="text-slate-700">
 
+    <!-- Mobile Menu Button -->
+    <button id="menu-button" class="lg:hidden fixed top-4 left-4 z-50 bg-white/80 backdrop-blur-sm w-10 h-10 rounded-full shadow-md flex items-center justify-center">
+        <i id="menu-icon" class="fas fa-bars"></i>
+    </button>
+
+    <!-- Overlay for Mobile Menu -->
+    <div id="menu-overlay" class="lg:hidden fixed inset-0 bg-black/40 z-30 hidden"></div>
+
     <div class="flex min-h-screen">
-        <!-- Left Sidebar for Mindmap Navigation -->
-        <aside class="w-80 hidden lg:block sticky top-0 h-screen overflow-y-auto bg-white/70 backdrop-blur-lg border-r border-slate-200 p-8">
+        <!-- Left Sidebar for Navigation -->
+        <aside id="mobile-menu" class="w-80 fixed lg:sticky top-0 h-screen overflow-y-auto bg-white/90 backdrop-blur-lg border-r border-slate-200 p-8 z-40 transform -translate-x-full lg:transform-none transition-transform duration-300 ease-in-out">
             <div class="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 text-transparent bg-clip-text mb-8">
                 <i class="fas fa-sitemap mr-2"></i>目录导航
             </div>
@@ -316,6 +319,7 @@
                     </div>
                 </section>
 
+                <!-- ... (The rest of the sections remain exactly the same) ... -->
                 <section id="part2" class="scroll-mt-20 glassmorphism p-8 mb-12">
                     <h2 class="text-2xl font-bold mb-6 relative pl-6 section-title">第二部分：福祉的生物学基础：遗传、神经化学与"幸福设定点"</h2>
                     <p class="mb-4">在探讨了幸福的哲学与心理学定义之后，本部分将深入其生物学根基。我们的情感体验并非凭空产生，而是深深植根于遗传基因和大脑的神经化学活动之中。理解这些内在的生物因素，有助于我们更清晰地认识到，个人选择和后天努力在何种程度上能够影响我们的幸福水平。</p>
@@ -538,8 +542,8 @@
             }
         });
 
-        // Scrollspy for mindmap navigation
         document.addEventListener('DOMContentLoaded', () => {
+            // Scrollspy for desktop navigation
             const sections = document.querySelectorAll('section[id]');
             const navLinks = document.querySelectorAll('.mindmap-nav a');
 
@@ -554,10 +558,44 @@
                         });
                     }
                 });
-            }, { rootMargin: "-20% 0px -80% 0px" }); // Trigger when section is in the middle 20% of the viewport
+            }, { rootMargin: "-20% 0px -80% 0px" });
 
             sections.forEach(section => {
                 observer.observe(section);
+            });
+
+            // Mobile Menu Toggle
+            const menuButton = document.getElementById('menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const menuOverlay = document.getElementById('menu-overlay');
+            const menuIcon = document.getElementById('menu-icon');
+            const menuLinks = mobileMenu.querySelectorAll('a');
+
+            const toggleMenu = () => {
+                const isMenuOpen = !mobileMenu.classList.contains('-translate-x-full');
+                mobileMenu.classList.toggle('-translate-x-full');
+                menuOverlay.classList.toggle('hidden');
+                
+                if (isMenuOpen) {
+                    menuIcon.classList.remove('fa-times');
+                    menuIcon.classList.add('fa-bars');
+                } else {
+                    menuIcon.classList.remove('fa-bars');
+                    menuIcon.classList.add('fa-times');
+                }
+            };
+
+            menuButton.addEventListener('click', toggleMenu);
+            menuOverlay.addEventListener('click', toggleMenu);
+            
+            // Close menu when a link is clicked
+            menuLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    const isMenuOpen = !mobileMenu.classList.contains('-translate-x-full');
+                    if (isMenuOpen) {
+                        toggleMenu();
+                    }
+                });
             });
         });
     </script>
